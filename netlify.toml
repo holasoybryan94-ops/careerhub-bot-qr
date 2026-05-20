@@ -1,2 +1,43 @@
 [build]
+  publish = "public"
   functions = "netlify/functions"
+
+# WHOOP OAuth + API proxy routes (PulseStack PWA)
+[[redirects]]
+  from = "/api/whoop/login"
+  to = "/.netlify/functions/whoop-login"
+  status = 200
+[[redirects]]
+  from = "/api/whoop/callback"
+  to = "/.netlify/functions/whoop-callback"
+  status = 200
+[[redirects]]
+  from = "/api/whoop/logout"
+  to = "/.netlify/functions/whoop-logout"
+  status = 200
+[[redirects]]
+  from = "/api/whoop/status"
+  to = "/.netlify/functions/whoop-status"
+  status = 200
+[[redirects]]
+  from = "/api/whoop/today"
+  to = "/.netlify/functions/whoop-today"
+  status = 200
+[[redirects]]
+  from = "/api/whoop/sleep"
+  to = "/.netlify/functions/whoop-sleep"
+  status = 200
+[[redirects]]
+  from = "/api/whoop/workouts"
+  to = "/.netlify/functions/whoop-workouts"
+  status = 200
+[[redirects]]
+  from = "/api/whoop/trend"
+  to = "/.netlify/functions/whoop-trend"
+  status = 200
+
+# Existing WhatsApp webhook (unrelated CareerHub bot — leave intact)
+[[redirects]]
+  from = "/webhook"
+  to = "/.netlify/functions/webhook"
+  status = 200

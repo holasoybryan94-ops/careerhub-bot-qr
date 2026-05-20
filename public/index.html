@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0d10" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="PulseStack" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/styles.css" />
+  <title>PulseStack — WHOOP + Macros</title>
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="pulse"></span>
+      <h1>PulseStack</h1>
+    </div>
+    <div class="header-actions">
+      <span id="modeBadge" class="badge">Demo</span>
+      <button id="connectBtn" class="ghost">Connect WHOOP</button>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab active" data-tab="today">Today</button>
+    <button class="tab" data-tab="sleep">Sleep</button>
+    <button class="tab" data-tab="workouts">Workouts</button>
+    <button class="tab" data-tab="nutrition">Nutrition</button>
+    <button class="tab" data-tab="trends">Trends</button>
+  </nav>
+
+  <main>
+    <!-- TODAY -->
+    <section id="tab-today" class="tab-panel active">
+      <div class="ring-card">
+        <div class="ring" id="recoveryRing">
+          <svg viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="52" class="ring-bg" />
+            <circle cx="60" cy="60" r="52" class="ring-fg" id="recoveryRingFg" />
+          </svg>
+          <div class="ring-center">
+            <div class="ring-label">Recovery</div>
+            <div class="ring-value" id="recoveryValue">--</div>
+            <div class="ring-unit">%</div>
+          </div>
+        </div>
+
+        <div class="ring" id="strainRing">
+          <svg viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="52" class="ring-bg" />
+            <circle cx="60" cy="60" r="52" class="ring-fg strain" id="strainRingFg" />
+          </svg>
+          <div class="ring-center">
+            <div class="ring-label">Strain</div>
+            <div class="ring-value" id="strainValue">--</div>
+            <div class="ring-unit">/ 21</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat">
+          <div class="stat-label">HRV</div>
+          <div class="stat-value"><span id="hrvValue">--</span><small>ms</small></div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Resting HR</div>
+          <div class="stat-value"><span id="rhrValue">--</span><small>bpm</small></div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">SpO₂</div>
+          <div class="stat-value"><span id="spo2Value">--</span><small>%</small></div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Skin Temp</div>
+          <div class="stat-value"><span id="tempValue">--</span><small>°C Δ</small></div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Calories</div>
+          <div class="stat-value"><span id="kcalValue">--</span><small>kcal</small></div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Avg HR</div>
+          <div class="stat-value"><span id="avgHrValue">--</span><small>bpm</small></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Macros today</div>
+        <div id="macroSummary" class="macro-summary"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Recovery insight</div>
+        <p id="insightText" class="muted">Loading…</p>
+      </div>
+    </section>
+
+    <!-- SLEEP -->
+    <section id="tab-sleep" class="tab-panel">
+      <div class="card">
+        <div class="card-title">Last night</div>
+        <div class="sleep-grid">
+          <div><div class="stat-label">Duration</div><div class="stat-value"><span id="sleepDur">--</span><small>h</small></div></div>
+          <div><div class="stat-label">Efficiency</div><div class="stat-value"><span id="sleepEff">--</span><small>%</small></div></div>
+          <div><div class="stat-label">Performance</div><div class="stat-value"><span id="sleepPerf">--</span><small>%</small></div></div>
+          <div><div class="stat-label">Disturbances</div><div class="stat-value"><span id="sleepDist">--</span></div></div>
+        </div>
+        <div class="sleep-bars" id="sleepBars"></div>
+        <div class="legend">
+          <span><i class="dot light"></i>Light</span>
+          <span><i class="dot deep"></i>Deep (SWS)</span>
+          <span><i class="dot rem"></i>REM</span>
+          <span><i class="dot awake"></i>Awake</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Sleep need</div>
+        <p class="muted">Baseline + sleep debt + recent strain.</p>
+        <div class="stat-grid two">
+          <div><div class="stat-label">Need</div><div class="stat-value"><span id="sleepNeed">--</span><small>h</small></div></div>
+          <div><div class="stat-label">Debt</div><div class="stat-value"><span id="sleepDebt">--</span><small>min</small></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORKOUTS -->
+    <section id="tab-workouts" class="tab-panel">
+      <div class="card">
+        <div class="card-title">Recent activities</div>
+        <ul id="workoutList" class="workout-list"></ul>
+      </div>
+    </section>
+
+    <!-- NUTRITION -->
+    <section id="tab-nutrition" class="tab-panel">
+      <div class="card">
+        <div class="card-title">Daily targets</div>
+        <div class="targets">
+          <label>Calories <input type="number" id="tCal" min="0" /></label>
+          <label>Protein (g) <input type="number" id="tPro" min="0" /></label>
+          <label>Carbs (g) <input type="number" id="tCar" min="0" /></label>
+          <label>Fat (g) <input type="number" id="tFat" min="0" /></label>
+        </div>
+        <div id="macroBars" class="macro-bars"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Log a meal</div>
+        <div class="meal-form">
+          <input id="foodSearch" type="text" placeholder="Search food (e.g. chicken breast)" autocomplete="off" />
+          <ul id="foodResults" class="food-results"></ul>
+          <div class="meal-row">
+            <input id="foodName" type="text" placeholder="Food name" />
+            <input id="foodQty" type="number" placeholder="grams" min="0" step="1" />
+          </div>
+          <div class="meal-row">
+            <input id="foodCal" type="number" placeholder="kcal / 100g" min="0" step="1" />
+            <input id="foodPro" type="number" placeholder="protein / 100g" min="0" step="0.1" />
+            <input id="foodCar" type="number" placeholder="carbs / 100g" min="0" step="0.1" />
+            <input id="foodFat" type="number" placeholder="fat / 100g" min="0" step="0.1" />
+          </div>
+          <div class="meal-row">
+            <select id="mealType">
+              <option value="breakfast">Breakfast</option>
+              <option value="lunch">Lunch</option>
+              <option value="dinner">Dinner</option>
+              <option value="snack">Snack</option>
+            </select>
+            <button id="addMealBtn" class="primary">Add to log</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Today's log</div>
+        <ul id="mealLog" class="meal-log"></ul>
+      </div>
+    </section>
+
+    <!-- TRENDS -->
+    <section id="tab-trends" class="tab-panel">
+      <div class="card">
+        <div class="card-title">7-day recovery</div>
+        <canvas id="recoveryChart" height="140"></canvas>
+      </div>
+      <div class="card">
+        <div class="card-title">7-day strain vs calories in</div>
+        <canvas id="strainChart" height="140"></canvas>
+      </div>
+      <div class="card">
+        <div class="card-title">HRV trend</div>
+        <canvas id="hrvChart" height="140"></canvas>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <small>Built on the WHOOP Developer API · Data syncs from your WHOOP strap via the WHOOP app, then over the API.</small>
+  </footer>
+
+  <script src="/store.js"></script>
+  <script src="/nutrition.js"></script>
+  <script src="/whoop.js"></script>
+  <script src="/charts.js"></script>
+  <script src="/app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(()=>{}));
+    }
+  </script>
+</body>
+</html>
