@@ -15,6 +15,16 @@ A WHOOP + macros tracker that runs as a Progressive Web App (installable on iPho
 
 The app ships in **demo mode** with synthetic data so it's usable immediately. Once you plug in WHOOP credentials and tap **Connect WHOOP**, the same screens render live data.
 
+## Deploy as its own Netlify site
+
+This branch is self-contained — it has no WhatsApp bot code or any other unrelated functions. To deploy it as a standalone PulseStack site (separate from anything else in this repo):
+
+1. In Netlify, **Add new site → Import from Git** and select this repository.
+2. Set **Branch to deploy** to `claude/fitness-tracking-bluetooth-app-BtaJz` (or merge this branch into a dedicated branch like `pulsestack`).
+3. Build settings are read from `netlify.toml` automatically (publish dir `public`, functions dir `netlify/functions`). No build command needed.
+4. Add the WHOOP env vars from `.env.example` under **Site settings → Environment variables**.
+5. Deploy. Your site URL is the redirect URI you'll register in the WHOOP developer console.
+
 ## Install on iPhone
 
 1. Open the deployed site in Safari.
@@ -54,7 +64,6 @@ netlify/functions/       # Serverless OAuth + API proxy
   whoop-workouts.js      # recent workouts
   whoop-trend.js         # 7-day rollup
   _whoop.js              # shared helpers (OAuth, cookies, fetch)
-  webhook.js             # unrelated CareerHub WhatsApp bot (left intact)
 ```
 
 **Token storage**: access + refresh tokens live in `HttpOnly; Secure; SameSite=Lax` cookies set by the callback function. The browser never sees them. All API calls go through the serverless proxy, which attaches the token and transparently refreshes it on 401.

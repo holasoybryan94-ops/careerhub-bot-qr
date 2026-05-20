@@ -35,9 +35,3 @@
   from = "/api/whoop/trend"
   to = "/.netlify/functions/whoop-trend"
   status = 200
-
-# Existing WhatsApp webhook (unrelated CareerHub bot — leave intact)
-[[redirects]]
-  from = "/webhook"
-  to = "/.netlify/functions/webhook"
-  status = 200
